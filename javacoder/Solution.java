@@ -55,24 +55,34 @@ public class Solution {
         int len = nums.length;
         Arrays.sort(nums);
         for (int i=0; i<len-2; i++){
-            if(nums[i] > 0)
-                return result;
             if(i>0 && nums[i] == nums[i-1])
                 continue;
             for (int j=i+1; j<len-1; j++){
                 if(j>i+1 && nums[j] == nums[j-1])
                     continue;
-                for (int k = len-1; k>j; k--) {
-                    if(nums[i] + nums[j] + nums[k] < 0)
-                        break;
-                    if ((k == len - 1 || nums[k] != nums[k + 1]) && nums[i] + nums[j] + nums[k] == 0) {
-                        List<Integer> list = new ArrayList<>();
-                        list.add(nums[i]);
-                        list.add(nums[j]);
-                        list.add(nums[k]);
-                        result.add(list);
-                    }
+                int k=len-1;
+                while(k>j && nums[j]+nums[k]+nums[i]>0){ // 循环里面的语句要尽可能少，取代下面循环中操作过多的for
+                    k--;
                 }
+                if(k==j) break;
+                if (nums[j] + nums[k] + nums[i] == 0) {
+                    List<Integer> list = new ArrayList<>();
+                    list.add(nums[i]);
+                    list.add(nums[j]);
+                    list.add(nums[k]);
+                    result.add(list);
+                }
+//                for (int k = len-1; k>j; k--) {
+//                    if(nums[i] + nums[j] + nums[k] < 0)
+//                        break;
+//                    if ((k == len - 1 || nums[k] != nums[k + 1]) && nums[i] + nums[j] + nums[k] == 0) {
+//                        List<Integer> list = new ArrayList<>();
+//                        list.add(nums[i]);
+//                        list.add(nums[j]);
+//                        list.add(nums[k]);
+//                        result.add(list);
+//                    }
+//                }
             }
         }
         return result;
