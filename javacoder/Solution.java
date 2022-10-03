@@ -26,7 +26,7 @@ public class Solution {
         return null;
     }
     
-    // 2. three sum（hash / double pointer）
+    // 15. three sum（hash / double pointer）
     // hash
     public List<List<Integer>> threeSum(int[] nums){
         List<List<Integer>> result = new ArrayList<List<Integer>>();
@@ -86,6 +86,27 @@ public class Solution {
             }
         }
         return result;
+    }
+    
+    // 20. valid parentheses (stack)
+    public boolean ValidParentheses(String s) {
+        int len = s.length();
+        char[] charArr = s.toCharArray();
+        Stack<Character> st = new Stack<Character>();
+        for (int i=0; i<len; i++){
+            if(charArr[i] == '(') {
+                st.push(')');
+            } else if(charArr[i] == '[') {
+                st.push(']');
+            } else if(charArr[i] == '{') {
+                st.push('}');
+            } else if(st.isEmpty() || charArr[i] != st.pop()){ //st.isEmpty() || !st.isEmpty() && charArr[i] != st.pop()
+                return false;
+            }
+        }
+        if(st.empty())
+            return true;
+        return false;
     }
 
     public static void main(String[] args){
