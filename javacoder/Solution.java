@@ -12,7 +12,9 @@ public class Solution {
         }
         return null;
     }
-
+    
+    /**********************************************   hash  **********************************************/
+    
   // 1. two sum (hash)
     public int[] twoSum_hash(int[] nums, int target){
         Map<Integer,Integer> map = new HashMap<>();
@@ -114,6 +116,8 @@ public class Solution {
         System.out.println(ts.twoSum(new int[]{2,7,11,5}, 9));
     }
     
+    
+    /**********************************************   Iteration / Recursion  **********************************************/
     // 20. Merge Two Sorted Lists( Iteration / Recursion)
     public ListNode mergeTwoLists(ListNode list1, ListNode list2) { // Iteration
         ListNode prehead = new ListNode(0,null);
@@ -150,9 +154,37 @@ public class Solution {
         }
     }
     
+    /**********************************************   DP  **********************************************/
+    // 62. Unique Paths( Dynamic Programming / Recursion)
+    public int uniquePaths(int m, int n) { // DP f(m,n) = f(m-1,n) + f(m,n-1)
+        int[][] result = new int[m][n];
+//        result[0][1] = 1;
+//        result[1][0] = 1;
+//        for (int i=1; i<m; i++){
+//            for (int j=1; j<n; j++){
+//                result[i][j] = result[i-1][j] + result[i][j-1];
+//            }
+//        }
+        for (int i=0; i<m; i++){
+            for (int j=0; j<n; j++){
+                if(i==0 || j==0)
+                    result[i][j] = 1;
+                else
+                    result[i][j] = result[i-1][j] + result[i][j-1];
+            }
+        }
+        return result[m-1][n-1];
+    }
+
+    public int uniquePaths_Recursion(int m, int n){ //Recursion
+        if(m==1 || n==1)
+            return 1;
+        return uniquePaths_Recursion(m-1,n) + uniquePaths_Recursion(m,n-1);
+    }
+    
     
     // 70. Climbing Stairs ( Dynamic Programming )
-    public int climbStairs(int n) { //DP
+    public int climbStairs(int n) { //DP f(n) = f(n-1) + f(n-2)
         int prepre = 1;
         if(n<=1)
             return prepre;
