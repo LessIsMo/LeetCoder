@@ -151,5 +151,20 @@ public class Solution {
     }
     
     
+    // 70. Climbing Stairs ( Dynamic Programming )
+    public int climbStairs(int n) { //DP
+        int prepre = 1;
+        if(n<=1)
+            return prepre;
+        int pre = 2;
+        int result = 2;
+        for(int i=2; i<n; i++){
+            result = pre + prepre;
+            prepre = pre;
+            pre = result;
+        }
+        return result;
+    }
+    
 }
 
