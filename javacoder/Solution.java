@@ -90,30 +90,27 @@ public class Solution {
         return result;
     }
     
-    // 20. valid parentheses (stack)
-    public boolean ValidParentheses(String s) {
-        int len = s.length();
-        char[] charArr = s.toCharArray();
-        Stack<Character> st = new Stack<Character>();
-        for (int i=0; i<len; i++){
-            if(charArr[i] == '(') {
-                st.push(')');
-            } else if(charArr[i] == '[') {
-                st.push(']');
-            } else if(charArr[i] == '{') {
-                st.push('}');
-            } else if(st.isEmpty() || charArr[i] != st.pop()){ //st.isEmpty() || !st.isEmpty() && charArr[i] != st.pop()
-                return false;
-            }
+    // 13. Roman to Integer
+    public int romanToInt(String s) {
+        Map<Character, Integer> map = new HashMap<Character, Integer>();
+        map.put('I',1);
+        map.put('V',5);
+        map.put('X',10);
+        map.put('L',50);
+        map.put('C',100);
+        map.put('D',500);
+        map.put('M',1000);
+        int result = 0;
+        int pre = 9999;
+        for(int i=0; i<s.length(); i++){
+            int temp = map.get(s.charAt(i));
+            if(pre < temp)
+                result = result + temp - 2*pre;
+            else
+                result += temp;
+            pre = temp;
         }
-        if(st.empty())
-            return true;
-        return false;
-    }
-
-    public static void main(String[] args){
-        Two_Sum ts = new Two_Sum();
-        System.out.println(ts.twoSum(new int[]{2,7,11,5}, 9));
+        return result;
     }
     
     
@@ -196,6 +193,57 @@ public class Solution {
             pre = result;
         }
         return result;
+    }
+    
+    
+    /**********************************************     **********************************************/
+    // 14. Longest Common Prefix ( 首先找到最短的字符串长度 )
+    public String longestCommonPrefix(String[] strs) {
+        String result = new String("");
+        int len = strs.length;
+        int shortestLen = strs[0].length();
+        boolean flag = true;
+        for (int i=1; i<len; i++){
+            if(shortestLen > strs[i].length())
+                shortestLen = strs[i].length();
+        }
+        for(int i=0; i<shortestLen; i++){
+            char temp = strs[0].charAt(i);
+            for(int j=1; j<len; j++){
+                if(temp != strs[j].charAt(i))
+                    flag = false;
+            }
+            if(!flag)
+                break;
+            result = result + String.valueOf(temp);
+        }
+        return result;
+    }
+   
+    // 20. valid parentheses (stack)
+    public boolean ValidParentheses(String s) {
+        int len = s.length();
+        char[] charArr = s.toCharArray();
+        Stack<Character> st = new Stack<Character>();
+        for (int i=0; i<len; i++){
+            if(charArr[i] == '(') {
+                st.push(')');
+            } else if(charArr[i] == '[') {
+                st.push(']');
+            } else if(charArr[i] == '{') {
+                st.push('}');
+            } else if(st.isEmpty() || charArr[i] != st.pop()){ //st.isEmpty() || !st.isEmpty() && charArr[i] != st.pop()
+                return false;
+            }
+        }
+        if(st.empty())
+            return true;
+        return false;
+    }
+
+    public static void main(String[] args){
+        Two_Sum ts = new Two_Sum();
+        System.out.println(ts.twoSum(new int[]{2,7,11,5}, 9));
     }
     
 }
