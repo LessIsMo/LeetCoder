@@ -220,6 +220,7 @@ public class Solution {
         return result;
     }
    
+    /**********************************************    Stack  **********************************************/
     // 20. valid parentheses (stack)
     public boolean ValidParentheses(String s) {
         int len = s.length();
@@ -240,10 +241,150 @@ public class Solution {
             return true;
         return false;
     }
+    
+    // 1047. Remove All Adjacent Duplicates In String
+    public String removeDuplicates(String s) { // 或者用StringBuilder模拟栈操作
+        StringBuilder result = new StringBuilder();
+        Stack<Character> st = new Stack<Character>();
+        int len = s.length();
+        st.push(s.charAt(0));
+        for(int i=1; i < len; i++){
+            char temp = s.charAt(i);
+            if(!st.isEmpty() && st.peek() == temp){
+                st.pop();
+            } else {
+                st.push(temp);
+            }
+        }
+        while(!st.isEmpty()){
+            result.append(st.pop());
+        }
+        return result.reverse().toString();
+    }
+    
+    //739. Daily Temperatures
+    public int[] dailyTemperatures(int[] temperatures) {
+        int len = temperatures.length;
+        Stack<Integer> st = new Stack<>(); // 存储没有计算出天数的天在temperatures中的位置
+        int[] result = new int[len];
+        for(int i=0; i < len; i++){
+            while(!st.isEmpty() && temperatures[i] > temperatures[st.peek()]){
+                result[st.peek()] = i - st.pop();
+            }
+            st.push(i);
+        }
+        return result;
+    }
+    
+    //678. Valid Parenthesis String
+    public boolean checkValidString(String s) {
+        char[] cs = s.toCharArray();
+//        Stack<Character> st = new Stack<Character>(); // 可以不用存储右括号
+//        Stack<Character> star = new Stack<Character>(); // 存储 *
+        // 可以不用存储）, 存储 *
+        // 栈不存储char，存储位置编号，为了防止*与（配对，（在*后面的情况
+        Stack<Integer> st = new Stack<Integer>(); // 可以不用存储右括号
+        Stack<Integer> star = new Stack<Integer>(); // 存储 *
 
+        for(int i=0; i<s.length(); i++){
+            if(cs[i] == '(')
+                st.push(i);
+            else if(cs[i] == '*')
+                star.push(i);
+            else{
+                if(!st.isEmpty())
+                    st.pop();
+                else if(!star.isEmpty())
+                    star.pop();
+                else
+                    return false;
+            }
+        }
+//        if(st.isEmpty())
+//            result = true;
+        // 不能只判断st是否为空，因为star可以和里面的左括号配对
+        if(st.size() > star.size())
+            return false;
+        else{
+            while(!st.isEmpty()){
+                if(st.pop() > star.pop())
+                    return false;
+            }
+            return true;
+        }
+    }
+
+    /**********************************************  Hash Map / Hash Set  **********************************************/
+    // 1160. Find Words That Can Be Formed by Characters
+    public int countCharacters(String[] words, String chars) {
+        // 也可以用数组代替hashmap存储字母个数
+        int result = 0;
+        // hash记录的是chars中各字母出现的次数
+        HashMap<Character,Integer> letters = new HashMap<>();
+        for(int i=0; i<chars.length(); i++){
+            letters.put(chars.charAt(i),letters.getOrDefault(chars.charAt(i),0)+1);
+        }
+        for(String word : words){
+            char[] cword = word.toCharArray();
+            HashMap<Character,Integer> wl = new HashMap<>();
+            for(int i=0; i<cword.length; i++){
+                wl.put(cword[i],wl.getOrDefault(cword[i],0)+1);
+            }
+            boolean flag = true;
+            for(char key : wl.keySet()){
+                if(!letters.containsKey(key) || letters.get(key)<wl.get(key)){
+                    flag = false;
+                    break;
+                }
+            }
+            if(flag)
+                result += cword.length;
+        }
+        return result;
+    }
+    
+    // 219. Contains Duplicate II
+    // 滑动窗口
+    public boolean containsNearbyDuplicate(int[] nums, int k) {
+        HashSet<Integer> set = new HashSet<>();
+        for(int i=0; i<nums.length; i++){
+            if(set.contains(nums[i]))
+                return true;
+            set.add(nums[i]);
+            if(set.size() > k){
+                set.remove(nums[i-k]);
+            }
+        }
+        return false;
+    }
+    
     public static void main(String[] args){
         Two_Sum ts = new Two_Sum();
         System.out.println(ts.twoSum(new int[]{2,7,11,5}, 9));
+    }
+    
+    /**********************************************  List  **********************************************/
+    // 3. Longest Substring Without Repeating Characters
+    public int lengthOfLongestSubstring(String s) {
+        List<Character> sub_str = new ArrayList<>();
+        int ans = 0;
+        for(int i=0; i<s.length(); i++){
+            if(!sub_str.contains(s.charAt(i))) {
+                sub_str.add(s.charAt(i));
+                ans = Math.max(ans,sub_str.size());
+            }else{
+                ans = Math.max(ans,sub_str.size());
+//                for (; sub_str.get(j) != s.charAt(i); j++) {
+//                    sub_str.remove(j);
+//                } 每次的删除操作会影响字母的下标，因此这样行不通，会报超出界限的错误
+                while(sub_str.get(0) != s.charAt(i)) {
+                    sub_str.remove(0);
+                }
+                sub_str.remove(0);
+                sub_str.add(s.charAt(i)); // 不要忘记这句
+            }
+        }
+        return ans;
     }
     
 }
