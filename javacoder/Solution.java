@@ -151,6 +151,40 @@ public class Solution {
         }
     }
     
+    // 17. Letter Combinations Phone Number
+    public List<String> letterCombinations(String digits) {
+        if(digits.equals("")){
+            return result;
+        }
+        Map<Character, String> map = new HashMap<Character,String>() {{
+            put('2',"abc");
+            put('3',"def");
+            put('4',"ghi");
+            put('5',"jkl");
+            put('6',"mno");
+            put('7',"pqrs");
+            put('8',"tuv");
+            put('9',"wxyz");
+        }};
+        int len = digits.length();
+        List<String> letters = new ArrayList<String>();
+        for(int i=0; i<len; i++){
+            letters.add(map.get(digits.charAt(i)));
+        }
+        combine(letters, len, 0, new String(""), result);
+        return result;
+    }
+
+    public void combine(List<String> letters,int len, int nd, String combination, List<String> result){
+        if(nd >= len) {
+            result.add(combination);
+            return;
+        }
+        for(int i=0; i<letters.get(nd).length(); i++){
+            combine(letters,len,nd+1,combination+letters.get(nd).charAt(i),result);
+        }
+    }
+    
     /**********************************************   DP  **********************************************/
     // 62. Unique Paths( Dynamic Programming / Recursion)
     public int uniquePaths(int m, int n) { // DP f(m,n) = f(m-1,n) + f(m,n-1)
@@ -358,11 +392,7 @@ public class Solution {
         return false;
     }
     
-    public static void main(String[] args){
-        Two_Sum ts = new Two_Sum();
-        System.out.println(ts.twoSum(new int[]{2,7,11,5}, 9));
-    }
-    
+
     /**********************************************  List  **********************************************/
     // 3. Longest Substring Without Repeating Characters
     public int lengthOfLongestSubstring(String s) {
@@ -384,7 +414,25 @@ public class Solution {
                 sub_str.add(s.charAt(i)); // 不要忘记这句
             }
         }
+
+        // 方法二 Hash
+        int n = s.length();
+        Map<Character, Integer> map = new HashMap<>();
+        for (int end = 0, start = 0; end < n; end++) {
+            char alpha = s.charAt(end);
+            if (map.containsKey(alpha)) {
+                start = Math.max(map.get(alpha), start);
+            }
+            ans = Math.max(ans, end - start + 1);
+            map.put(s.charAt(end), end + 1);
+        }
+
         return ans;
+    }
+    
+    public static void main(String[] args){
+        Two_Sum ts = new Two_Sum();
+        System.out.println(ts.twoSum(new int[]{2,7,11,5}, 9));
     }
     
 }
