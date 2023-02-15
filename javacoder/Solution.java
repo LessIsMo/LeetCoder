@@ -377,6 +377,85 @@ public class Solution {
         return result;
     }
     
+    // 451. Sort Characters By Frequency
+    public String frequencySort(String s) {
+        HashMap<Character, Integer> map = new HashMap<>();
+        char[] letters = s.toCharArray();
+        for(char c : letters){
+            map.put(c,map.getOrDefault(c,0)+1);
+        }
+        List<Character> ans = new ArrayList<>(map.keySet());
+        // ans.sort((a,b) -> map.get(b)-map.get(a));
+        ans.sort((a,b) -> map.get(b) - map.get(a));
+        StringBuffer result = new StringBuffer();
+        for(Character c:ans){
+            for(int j=0; j<map.get(c); j++)
+                result.append(c);
+        }
+        return result.toString();
+    }
+    
+    // 12. Integer to Roman
+    public String intToRoman(int num) {
+//        HashMap<Integer,String> map = new HashMap<>(){{
+//            put(1,"I");
+//            put(4,"IV");
+//            put(5,"V");
+//            put(9,"IX");
+//            put(10,"X");
+//            put(40,"XL");
+//            put(50,"L");
+//            put(90,"XC");
+//            put(100,"C");
+//            put(400,"CD");
+//            put(500,"D");
+//            put(900,"CM");
+//            put(1000,"M");
+//        }};
+//        StringBuffer ans = new StringBuffer();
+//        int[] nums = new int[]{1,4,5,9,10,40,50,90,100,400,500,900,1000};
+//        int pos = nums.length-1;
+//        while(num>0){
+//            for(; nums[pos] > num; pos--){}
+//            num -= nums[pos];
+//            ans.append(map.get(nums[pos]));
+//        }
+//        return ans.toString();
+        String[] symbols = new String[]{"I","IV","V","IX","X","XL","L","XC","C","CD","D","CM","M"};
+        int[] nums = new int[]{1,4,5,9,10,40,50,90,100,400,500,900,1000};
+        StringBuffer ans = new StringBuffer();
+        for(int pos = nums.length-1; num > 0;){
+            for(; nums[pos] > num; pos--){}
+            num -= nums[pos];
+            ans.append(symbols[pos]);
+        }
+        return ans.toString();
+    }
+    
+    // 697. Degree of Array
+    public int findShortestSubArray(int[] nums) {
+        // Hash value也可以存储数组
+        // 数组用来存储 出现次数，起始坐标，终止坐标
+        HashMap<Integer,int[]> map = new HashMap<>();
+        int max = 0;
+        int ans = 50000;
+        for(int i=0; i<nums.length; ++i){
+            if(!map.containsKey(nums[i])){
+                map.put(nums[i], new int[]{1,i,i});
+            } else {
+                map.get(nums[i])[0]++;
+                map.get(nums[i])[2] = i;
+            }
+            max = Math.max(max,map.get(nums[i])[0]);
+        }
+        for(Map.Entry<Integer, int[]> entry : map.entrySet()){
+            if( entry.getValue()[0] == max){
+                ans = Math.min(ans, entry.getValue()[2]-entry.getValue()[1]+1);
+            }
+        }
+        return ans;
+    }
+    
     // 219. Contains Duplicate II
     // 滑动窗口
     public boolean containsNearbyDuplicate(int[] nums, int k) {
@@ -430,6 +509,434 @@ public class Solution {
         return ans;
     }
     
+    // 692. Top K Frequent Words
+    public List<String> topKFrequent(String[] words, int k) {
+        HashMap<String,Integer> map = new HashMap<>();
+        int max = 1;
+        for(String word : words){
+            map.put(word, map.getOrDefault(word,0)+1);
+        }
+        List<String> ans = new ArrayList<>(map.keySet());
+        ans.sort((a,b)-> map.get(a) > map.get(b) ? -1 : map.get(a).equals(map.get(b)) ? a.compareTo(b) : 1);
+        return ans.subList(0, k);
+    }
+
+    public static void main(String[] args){
+        Top_K_Frequent_Words_692 t = new Top_K_Frequent_Words_692();
+        t.topKFrequent(new String[]{"the","day","is","sunny","the","the","the","sunny","is","is"},4);
+    }
+    
+    // 763. Partition Labels
+    public List<Integer> partitionLabels(String s) {
+//        List<Integer> ans = new ArrayList<>();
+//        List<Character> letters = new ArrayList<>();
+//        boolean flag_contain = false;
+//        int len = 1;
+//        ArrayList<Character> sc = Arrays.asList(s.toCharArray());
+//        letters.add(sc[0]);
+//        for(int i=1; i<sc.length; i++){
+//            for(int j=0; j<letters.size(); j++){
+//                if(s.contains(letters.get(j).toString())){
+//                    flag_contain = true;
+//                    break;
+//                }
+//            }
+//            if(flag_contain){
+//                len++;
+//                if(!letters.contains(s.charAt(i))){
+//                    letters.add(s.charAt(i));
+//                }
+//            } else {
+//                ans.add(len);
+//                letters.clear();
+//                letters.add(s.charAt(i));
+//                len = 1;
+//            }
+//            flag_contain = false;
+//        }
+        List<Integer> ans = new ArrayList<>();
+        int[] pos = new int[26]; // 存储每个字母在s中出现的最后的位置
+        for(int i=0; i<s.length(); i++){
+            pos[s.charAt(i)-'a'] = i;
+        }
+        int len = 0;
+        int letter_pos = 0;
+        for(int i=0; i<s.length(); i++){
+            len++;
+            letter_pos = Math.max(letter_pos, pos[s.charAt(i) - 'a']);
+            if(letter_pos == i) {
+                ans.add(len);
+                len = 0;
+            }
+//            if(letter_pos > i) {
+//                letter_pos = Math.max(letter_pos, pos[s.charAt(i) - 'a']);
+//            } else {
+//                ans.add(len);
+//                len = 0;
+//                letter_pos = pos[s.charAt(i) - 'a'];
+//            }
+        }
+        return ans;
+    }
+    
+    /**********************************************  Linked List  **********************************************/
+    private class ListNode {
+          int val;
+          ListNode next;
+          ListNode() {}
+          ListNode(int val) { this.val = val; }
+         ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+     }
+    
+    // 206. Reverse Linked List
+    public ListNode reverseList(ListNode head) {
+        ListNode node = head;
+        ListNode pre = null;
+        while( node != null){
+            ListNode temp = node.next;
+            node.next = pre;
+            pre = node;
+            node = temp;
+        }
+        return pre;
+    }
+    
+    // 2. Add Two Numbers
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        ListNode result = new ListNode();
+        ListNode node = result;
+        int carry = 0;
+        while(l1!=null || l2!=null){
+            int temp=0;
+//                if(l1 != null && l2 != null){
+//                    temp = l1.val + l2.val + flag;
+//                } else {
+//                    temp = l1 == null ? l2.val + flag : l1.val + flag;
+//                }
+            int m,n;
+            m = l1 == null ? 0 : l1.val;
+            n = l2 == null ? 0 : l2.val;
+            temp = m + n + carry;
+            carry = 0;
+
+            if(temp>=10){
+                carry = 1;
+                temp %= 10;
+            }
+
+            ListNode tempNode = new ListNode(temp);
+            node.next = tempNode;
+            node = tempNode;
+            l1 = l1 == null ? null : l1.next;
+            l2 = l2 == null ? null : l2.next;
+        }
+
+        if(carry==1){ // 判断最后有无进位
+            ListNode tempNode = new ListNode(1);
+            node.next = tempNode;
+            node = tempNode;
+        }
+        return result.next; // 返回result.next
+    }
+    
+    // 445. Add Two Numbers reverse
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        // deque 可用作 queue 或 stack
+        Deque<Integer> st1 = new LinkedList<>();
+        Deque<Integer> st2 = new LinkedList<>();
+        while(l1!=null){
+            st1.push(l1.val);
+            l1 = l1.next;
+        }
+        while(l2!=null){
+            st2.push(l2.val);
+            l2 = l2.next;
+        }
+        int carry = 0;
+        ListNode ans = null;
+        while(!st1.isEmpty() || !st2.isEmpty()){
+            int m = st1.isEmpty() ? 0 : st1.pop();
+            int n = st2.isEmpty() ? 0 : st2.pop();
+            int sum = m + n + carry;
+            carry = sum / 10;
+            sum = sum % 10;
+            ListNode node = new ListNode(sum,ans);
+            ans = node;
+        }
+        if(carry > 0){
+            ListNode node = new ListNode(carry,ans);
+            ans = node;
+        }
+        return ans;
+    }
+    
+    // 160. Intersection of Two Linked Lists
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        ListNode a = headA;
+        ListNode b = headB;
+        HashSet<ListNode> aset = new HashSet<>();
+        while( a!=null ){
+            aset.add(a);
+            a = a.next;
+        }
+        while( b!=null ){
+            if( aset.contains(b) ){
+                return b;
+            } else {
+                b = b.next;
+            }
+        }
+        return null;
+    }
+    
+    // 237. Delete Node in a Linked List
+    public void deleteNode(ListNode node) {
+        // node = node.next;
+        node.val = node.next.val;
+        node.next = node.next.next;
+    }
+    
+    // 19. Remove Nth Node From End
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode node = head;
+        int count = 0;
+        while(node != null){
+            node = node.next;
+            count++;
+        }
+        node = head;
+        if(count-n == 0) // 判断特殊情况
+            return head.next;
+        else{
+            for(int j=1; count-j > n; ++j){
+                node = node.next;
+            }
+            node.next = node.next.next;
+        }
+        return head;
+    }
+    
+    // 234. Palindrome Linked List
+    public boolean isPalindrome(ListNode head) {
+
+        // 快慢指针
+        if (head == null) {
+            return true;
+        }
+        // 找到前半部分链表的尾节点并反转后半部分链表
+        ListNode firstHalfEnd = endOfFirstHalf(head);
+        ListNode secondHalfStart = reverseList(firstHalfEnd.next);
+
+        // 判断是否回文
+        ListNode p1 = head;
+        ListNode p2 = secondHalfStart;
+        boolean result = true;
+        while (result && p2 != null) {
+            if (p1.val != p2.val) {
+                result = false;
+            }
+            p1 = p1.next;
+            p2 = p2.next;
+        }
+
+        // 还原链表并返回结果
+        firstHalfEnd.next = reverseList(secondHalfStart);
+        return result;
+
+//        // 双指针
+//        List<Integer> vals = new ArrayList<>();
+//        while(head != null){
+//            vals.add(head.val);
+//            head = head.next;
+//        }
+//        int back = vals.size()-1;
+//        for(int start = 0; start < back; ++start, --back){
+//            if(vals.get(start) != vals.get(back))
+//                return false;
+//        }
+//        return true;
+    }
+
+    private ListNode reverseList(ListNode head) {
+        ListNode prev = null;
+        ListNode curr = head;
+        while (curr != null) {
+            ListNode nextTemp = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = nextTemp;
+        }
+        return prev;
+    }
+
+    private ListNode endOfFirstHalf(ListNode head) {
+        ListNode fast = head;
+        ListNode slow = head;
+        while (fast.next != null && fast.next.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        return slow;
+    }
+    
+    // 141. Linked List Cycle
+    public boolean hasCycle(ListNode head) {
+        if(head == null)
+            return false;
+        ListNode fast = head;
+        ListNode slow = head;
+        while(fast.next != null && fast.next.next != null){
+            fast = fast.next.next;
+            slow = slow.next;
+            if(fast == slow){
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    // 142. Linked List Cycle II
+    public ListNode detectCycle(ListNode head) {
+        if(head == null){
+            return null;
+        }
+        HashSet<ListNode> set = new HashSet<>();
+        ListNode node = head;
+        while(node != null){
+            if(set.contains(node))
+                return node;
+            set.add(node);
+            node = node.next;
+        }
+        return null;
+    }
+    
+    // 138. Copy List with Random Pointer
+    class Node {
+        int val;
+        Node next;
+        Node random;
+
+        public Node(int val) {
+            this.val = val;
+            this.next = null;
+            this.random = null;
+        }
+    }
+
+    public Node copyRandomList(Node head) {
+        HashMap<Node,Node> map = new HashMap<>();
+        Node temp = head;
+        // map.put(null,null);
+        while(temp != null){
+            map.put(temp,new Node(temp.val));
+            temp = temp.next;
+        }
+        temp = head;
+        while(temp != null){
+            Node node = map.get(temp);
+            node.next = map.get(temp.next);
+            node.random = map.get(temp.random);
+            temp = temp.next;
+        }
+        return map.get(head);
+    }
+    
+    // 876. Middle of the Linked List
+    public ListNode middleNode(ListNode head) {
+        ListNode slow = head;
+        ListNode fast = head;
+        while(fast.next != null && fast.next.next != null){
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        if(fast.next == null)
+            return slow;
+        return slow.next;
+    }
+    
+    // 61. Rotate List
+    public ListNode rotateRight(ListNode head, int k) {
+        if(head == null){
+            return head;
+        }
+        ListNode temp = head;
+        int cnt = 0;
+        while(temp.next != null){
+            cnt++;
+            temp = temp.next;
+        }
+        temp.next = head;
+        cnt++;
+        for(int i=0; i<(cnt-(k%cnt)); i++){
+            temp = head;
+            head = head.next;
+        }
+        temp.next = null;
+        return head;
+    }
+    
+    // 328. Odd Even Linked List
+    public ListNode oddEvenList(ListNode head) {
+        if(head == null || head.next == null || head.next.next == null) // 别忘记这一步的判断
+            return head;
+        ListNode head_even = head.next;
+        ListNode odd = head, even = head_even;
+        while(even!=null && even.next!=null){
+            odd.next = even.next;
+            odd = odd.next;
+            even.next = odd.next;
+            even = even.next;
+        }
+        odd.next = head_even;
+        return head;
+    }
+    
+    // 24. Swap Nodes in Pairs
+    public ListNode swapPairs(ListNode head) {
+        // // 转变思路，创造一个pre
+        // ListNode pre = new ListNode(0);
+        // pre.next = head;
+        // ListNode node = pre;
+        // while(node.next != null && node.next.next != null){
+        //     ListNode start = node.next;
+        //     ListNode end = node.next.next;
+        //     node.next = end;
+        //     start.next = end.next;
+        //     end.next = start;
+        //     node = start;
+        // }
+        // return pre.next;
+
+        // 递归
+        if(head == null || head.next == null){
+            return head;
+        }
+        ListNode start = head;
+        ListNode end = head.next;
+        start.next = swapPairs(end.next);
+        end.next = start;
+        return end;
+    }
+    
+    // 203. Remove Linked List Elements
+    public ListNode removeElements(ListNode head, int val) {
+        if(head == null)
+            return head;
+        ListNode pre = head, node = head;
+        while(node != null){
+            if(node.val == val){
+                pre.next = node.next;
+            } else {
+                pre = node;
+            }
+            node = node.next;
+        }
+        if(head.val == val)
+            return head.next;
+        return head;
+    }
+
     public static void main(String[] args){
         Two_Sum ts = new Two_Sum();
         System.out.println(ts.twoSum(new int[]{2,7,11,5}, 9));
