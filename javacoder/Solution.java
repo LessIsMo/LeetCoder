@@ -936,6 +936,51 @@ public class Solution {
             return head.next;
         return head;
     }
+    
+    // 1019. Next Greater Node In Linked List
+    public int[] nextLargerNodes(ListNode head) {
+        List<Integer> list = new ArrayList<>();
+        ListNode node = head;
+        while(node != null){
+            list.add(node.val);
+            node = node.next;
+        }
+        int[] ans = new int[list.size()];
+        Deque<Integer> stack = new ArrayDeque<>();
+        for(int i=0; i<list.size(); i++){
+            if(stack.isEmpty() || list.get(stack.peek()) >= list.get(i)){
+                stack.push(i);
+            } else {
+                while(!stack.isEmpty() && list.get(stack.peek()) < list.get(i)){
+                    ans[ stack.pop() ] =  list.get(i);
+                }
+                stack.push(i);
+            }
+        }
+        return ans;   
+    }
+    
+    // 82. Remove Duplicates from Sorted List II
+    public ListNode deleteDuplicates(ListNode head) {
+        if(head==null || head.next==null)
+            return head;
+        ListNode pre_head = new ListNode(0,head);
+        ListNode pre = pre_head, cur, next;
+        while(pre!=null && pre.next!=null && pre.next.next!=null){
+            cur = pre.next;
+            next = cur.next;
+            if(cur.val == next.val){
+                while(cur != null && next != null && cur.val == next.val){
+                    cur = next;
+                    next = cur.next;
+                }
+                pre.next = next;
+            } else{
+                pre = pre.next;
+            }
+        }
+        return pre_head.next;
+    }
 
     public static void main(String[] args){
         Two_Sum ts = new Two_Sum();
