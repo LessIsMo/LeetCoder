@@ -981,7 +981,99 @@ public class Solution {
         }
         return pre_head.next;
     }
+    
+    // 1171. Remove Zero Sum Consecutive Nodes from Linked List
+    public ListNode removeZeroSumSublists(ListNode head) {
+        ListNode pre_head = new ListNode(0,head);
+        HashMap<Integer,ListNode> map = new HashMap<>();
+        int sum = 0;
+        for(ListNode node=pre_head; node!=null; node=node.next){
+            sum += node.val;
+            if(map.containsKey(sum)){
+                ListNode temp = map.get(sum);
+                ListNode del_node = temp.next;
+                int temp_num = sum;
+                temp.next = node.next;
+                while(del_node != node){ // 把中间节点的历史记录都删掉
+                    temp_num += del_node.val;
+                    map.remove(temp_num);
+                    del_node = del_node.next;
+                }
+                // break;
+            } else {
+                map.put(sum,node);
+            }
+        }
+        return pre_head.next;
+    }
+    
+    // 92. Reverse Linked List II
+    public ListNode reverseBetween(ListNode head, int left, int right) {
+        if(head.next == null)
+            return head;
+        ListNode ans = new ListNode(0,head);
+        ListNode pre = ans;
+        Deque<ListNode> stack = new ArrayDeque<>();
+        for(int i=1; i<left; i++){
+            pre = pre.next;
+        }
+        ListNode node = pre.next;
+        for(int i=1; i<=(right-left+1); i++){
+            stack.push(node);
+            node = node.next;
+        }
+        ListNode temp = node;
+        while(!stack.isEmpty()){
+            pre.next = stack.pop();
+            pre = pre.next;
+        }
+        pre.next = temp;
+        return ans.next;
+    }
+    
+    // 86. Partition List
+    public ListNode partition(ListNode head, int x) {
+        Deque<ListNode> greater = new ArrayDeque<>();
+        ListNode ans = new ListNode(0,head);
+        ListNode pre = ans;
+        ListNode node = head;
+        while(node != null){
+            if(node.val < x){
+                pre.next = node;
+                pre = pre.next;
+            } else{
+                greater.add(node);
+            }
+            node = node.next;
+        }
+        while(!greater.isEmpty()){
+            pre.next = greater.remove();
+            pre = pre.next;
+        }
+        pre.next = null;
+        return ans.next;
+    }
 
+    /**********************************************  Tree  **********************************************/
+    // 101. Symmetric Tree
+    public boolean isSymmetric(TreeNode root) {
+        TreeNode l = root.left;
+        TreeNode r = root.right;
+        return isDuiCheng(l,r);
+    }
+
+    public boolean isDuiCheng(TreeNode l,TreeNode r){
+        if(l==null && r==null){
+            return true;
+        } else if(l==null || r==null){
+            return false;
+        } else {
+            if(l.val == r.val && isDuiCheng(l.left,r.right) && isDuiCheng(l.right,r.left))
+                return true;
+        }
+        return false;
+    }
+    
     public static void main(String[] args){
         Two_Sum ts = new Two_Sum();
         System.out.println(ts.twoSum(new int[]{2,7,11,5}, 9));
