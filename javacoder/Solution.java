@@ -1055,6 +1055,20 @@ public class Solution {
     }
 
     /**********************************************  Tree  **********************************************/
+    public class TreeNode {
+        int val;
+        TreeNode left;
+        TreeNode right;
+        TreeNode() {}
+        TreeNode(int val) { this.val = val; }
+        TreeNode(int val, TreeNode left, TreeNode right) {
+            this.val = val;
+            this.left = left;
+            this.right = right;
+        }
+    }
+    
+    
     // 101. Symmetric Tree
     public boolean isSymmetric(TreeNode root) {
         TreeNode l = root.left;
@@ -1072,6 +1086,60 @@ public class Solution {
                 return true;
         }
         return false;
+    }
+    
+    // 112. Path Sum
+    public boolean hasPathSum(TreeNode root, int sum) {
+        if (root == null) {
+            return false;
+        }
+        if (root.left == null && root.right == null) {
+            return sum == root.val;
+        }
+        return hasPathSum(root.left, sum - root.val) || hasPathSum(root.right, sum - root.val);
+    }
+    
+    // 104. Maximum Depth of Binary Tree
+    public int maxDepth(TreeNode root) {
+        if(root == null)
+            return 0;
+        return Math.max(maxDepth(root.left), maxDepth(root.right)) + 1;
+    }
+    
+    // 617. Merge Two Binary Trees
+    public TreeNode mergeTrees(TreeNode root1, TreeNode root2) {
+        if(root1==null && root2==null){
+            return null;
+        } else if(root1==null || root2==null){
+            return root1==null?root2:root1;
+        } else{
+            TreeNode node = new TreeNode(root1.val+root2.val);
+            node.left = mergeTrees(root1.left,root2.left);
+            node.right = mergeTrees(root1.right,root2.right);
+            return node;
+        }
+    }
+    
+    // 572. Subtree of Another Tree
+    public boolean isSubtree(TreeNode s, TreeNode t) {
+        return dfs(s, t);
+    }
+
+    public boolean dfs(TreeNode s, TreeNode t) {
+        if (s == null) {
+            return false;
+        }
+        return check(s, t) || dfs(s.left, t) || dfs(s.right, t);
+    }
+
+    public boolean check(TreeNode s, TreeNode t) {
+        if (s == null && t == null) {
+            return true;
+        }
+        if (s == null || t == null || s.val != t.val) {
+            return false;
+        }
+        return check(s.left, t.left) && check(s.right, t.right);
     }
     
     public static void main(String[] args){
