@@ -1142,6 +1142,102 @@ public class Solution {
         return check(s.left, t.left) && check(s.right, t.right);
     }
     
+    // 144. Binary Tree Preorder Traversal
+    public List<Integer> preorderTraversal(TreeNode root) {
+        List<Integer> list = new ArrayList<>();
+        if(root == null)
+            return list;
+        Deque<TreeNode> stack = new ArrayDeque<>();
+        stack.push(root);
+        while(!stack.isEmpty()){
+            TreeNode node = stack.pop();
+            list.add(node.val);
+            if(node.right != null){
+                stack.push(node.right);
+            }
+            if(node.left != null){
+                stack.push(node.left);
+            }
+        }
+        return list;
+    }
+
+    // public List<Integer> preorderTraversal(TreeNode root) {
+    //     List<Integer> ans = new ArrayList<>();
+    //     preorder(root,ans);
+    //     return ans;
+    // }
+
+    // public void preorder(TreeNode root, List<Integer> list){
+    //     if(root == null){
+    //         return;
+    //     } else {
+    //         list.add(root.val);
+    //         preorder(root.left,list);
+    //         preorder(root.right,list);
+    //     }
+    // }
+    
+    // 94. Binary Tree Inorder Traversal
+    public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> list = new ArrayList<>();
+        if(root == null)
+            return list;
+        Deque<TreeNode> stack = new ArrayDeque<>();
+
+        TreeNode node = root;
+        while(!stack.isEmpty() || node!=null){
+            while(node != null){
+                stack.push(node);
+                node = node.left;
+            }
+            TreeNode temp = stack.pop(); // 一定要用新的treenode存储pop出来的值
+            list.add(temp.val);
+            if(temp.right != null){
+                node = temp.right;
+            }
+        }
+        return list;
+    }
+    
+    // 145. Binary Tree Postorder Traversal
+    public List<Integer> postorderTraversal(TreeNode root) {
+        if(root == null){
+            return new ArrayList<Integer>();
+        }
+        List<Integer> ans = new ArrayList<>();
+        Deque<TreeNode> stack = new ArrayDeque<>();
+        TreeNode node = root;
+        stack.addLast(node);
+        while(!stack.isEmpty()){
+            // 中右左 倒序
+            node = stack.removeLast();
+            ans.add(0,node.val);
+            if(node.left!=null){
+                stack.addLast(node.left);
+            }
+            if(node.right!=null){
+                stack.addLast(node.right);
+            }
+        }
+        // List<Integer> ans = new ArrayList<>();
+        // Deque<TreeNode> stack = new ArrayDeque<>();
+        // TreeNode node = root;
+        // stack.addLast(node);
+        // while(!stack.isEmpty()){
+        //     TreeNode temp = stack.peekLast();
+        //     if(temp.left != null && temp.left != node && temp.right != node){
+        //         stack.addLast(temp.left);
+        //     } else if(temp.right != null && temp.right != node){
+        //         stack.addLast(temp.right);
+        //     } else{
+        //         node = stack.removeLast();
+        //         ans.add(node.val);
+        //     }
+        // }
+        return ans;
+    }
+    
     public static void main(String[] args){
         Two_Sum ts = new Two_Sum();
         System.out.println(ts.twoSum(new int[]{2,7,11,5}, 9));
