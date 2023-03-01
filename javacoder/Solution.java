@@ -1238,6 +1238,20 @@ public class Solution {
         return ans;
     }
     
+    // 111. Minimum Depth of Binary Tree
+    public int minDepth(TreeNode root) {
+        if(root == null){
+            return 0;
+        }
+        if(root.left != null && root.right != null){
+            return 1+Math.min(minDepth(root.left),minDepth(root.right));
+        } else if(root.left != null){
+            return 1+minDepth(root.left);
+        } else{
+            return 1+minDepth(root.right);
+        }
+    }
+    
     public static void main(String[] args){
         Two_Sum ts = new Two_Sum();
         System.out.println(ts.twoSum(new int[]{2,7,11,5}, 9));
