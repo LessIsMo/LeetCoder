@@ -1252,6 +1252,40 @@ public class Solution {
         }
     }
     
+    // 98. Validate Binary Search Tree
+    public boolean isValidBST(TreeNode root) {
+        // 方法一：中序遍历
+        long pre_val = Long.MIN_VALUE;
+        TreeNode cur = root;
+        Deque<TreeNode> stack = new ArrayDeque<>();
+        while(!stack.isEmpty() || cur!=null){
+            while(cur!=null){
+                stack.push(cur);
+                cur = cur.left;
+            }
+            cur = stack.pop();
+            if(pre_val >= cur.val)
+                return false;
+            pre_val = cur.val;
+            cur = cur.right;
+        }
+        return true;
+
+        // 方法二：递归
+        // return isValid(root,Long.MIN_VALUE,Long.MAX_VALUE);
+    }
+
+    // public boolean isValid(TreeNode node, long lower, long upper){
+    //     if(node == null){
+    //         return true;
+    //     }
+    //     if(node.val <= lower || node.val >= upper){
+    //         return false;
+    //     } else{
+    //         return isValid(node.left,lower,node.val) && isValid(node.right,node.val,upper);
+    //     }
+    // }
+    
     public static void main(String[] args){
         Two_Sum ts = new Two_Sum();
         System.out.println(ts.twoSum(new int[]{2,7,11,5}, 9));
