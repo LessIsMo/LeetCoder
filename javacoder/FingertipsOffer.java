@@ -152,4 +152,60 @@ public class {
         return dp[n];
     }
   
+  // 11. 旋转数组的最小数字
+  public int minArray(int[] numbers) {
+        // 或者用二分法
+        for(int i=0; i<(numbers.length-1); i++){
+            if(numbers[i] > numbers[i+1]){
+                return numbers[i+1];
+            }
+        }
+        return numbers[0];
+    }
+  
+  // 12. 矩阵中的路径 DFS
+  public boolean exist(char[][] board, String word) {
+        char[] wordCopy = word.toCharArray();
+
+        for(int i=0; i<board.length; i++){
+            for(int j=0; j<board[0].length; j++){
+                if(find(board, wordCopy, i, j, 0)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean find(char[][] board, char[] word, int i, int j, int k){
+        if(i<0 || i>=board.length || j<0 || j>=board[0].length || board[i][j]!=word[k]){
+            return false;
+        }
+        if(k == word.length-1){
+            return true;
+        }
+        board[i][j] = '\0';
+        boolean res = find(board, word, i+1, j, k+1) || find(board, word, i-1, j, k+1) || find(board, word, i, j+1, k+1) || find(board, word, i , j-1, k+1);
+        board[i][j] = word[k];
+        return res;
+    }
+  
+  // 14- I. 剪绳子 DP
+  public int cuttingRope(int n) {
+        if(n <= 3){
+            return n-1;
+        }
+        int[] dp = new int[n+1];
+        // dp[i] i长度的绳子可能的最大乘积
+        dp[1] = 1;
+        dp[2] = 2;
+        dp[3] = 3;
+        for(int i= 4; i<=n; ++i){
+            for(int j=1 ; j<=n/2 && j<i; ++j){
+                dp[i] = Math.max(dp[i], dp[j]*dp[i-j]);
+            }
+        }
+        return dp[n];
+    }
+  
 }
