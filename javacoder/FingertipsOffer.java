@@ -208,4 +208,39 @@ public class {
         return dp[n];
     }
   
+  // 18. 删除链表的节点
+  public ListNode deleteNode(ListNode head, int val) {
+      ListNode prehead = new ListNode();
+      prehead.next = head;
+      ListNode pre = prehead, node = head;
+      while(node != null){
+          if(node.val == val){
+              pre.next = node.next;
+              break;
+          }
+          pre = node;
+          node = node.next;
+      }
+      return prehead.next;
+  }
+  
+  // 58 - I. 翻转单词顺序
+  public String reverseWords(String s) {
+        s = s.trim();
+        StringBuilder str = new StringBuilder("");
+        int start = s.length()-1;
+        int end = s.length()-1;
+        while(start>=0){
+            if(s.charAt(start) == ' '){
+                str.append(s.substring(start+1,end+1)+" ");
+                while(start >= 0 && s.charAt(start) == ' '){ 
+                    --start;
+                }
+                end = start;
+            }
+            --start;
+        }
+        str.append(s.substring(start+1,end+1));
+        return str.toString();
+    }
 }
